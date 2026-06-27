@@ -1,0 +1,13 @@
+# Ambiente virtual
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Dados locais e PDFs 
+data/database.json
+data/invoices/*.pdf
+
+# IDEs
+.vscode/
+.idea/
