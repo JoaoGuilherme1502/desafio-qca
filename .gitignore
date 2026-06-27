@@ -11,3 +11,6 @@ data/invoices/*.pdf
 # IDEs
 .vscode/
 .idea/
+
+# Teste
+test_run.py
