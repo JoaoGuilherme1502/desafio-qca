@@ -8,7 +8,7 @@ class InvoiceValidator:
     """
 
     @staticmethod
-    def validate(raw_data: dict) -> Invoice:
+    def validate_invoice(raw_data: dict) -> Invoice | None:
         """
         Recebe o dicionário bruto, injeta no modelo Invoice e retorna o objeto validado.
         """
@@ -18,4 +18,4 @@ class InvoiceValidator:
             return invoice
         
         except ValidationError as e:
-            print(f"Os dados do PDF não correspondem à estrutura esperada\n{e}")
+            raise ValueError(f"Os dados do PDF não correspondem à estrutura esperada\n{e}")
