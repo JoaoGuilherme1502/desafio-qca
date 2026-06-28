@@ -71,14 +71,13 @@ def run_analytics(db_path: str):
         print(f"   R$ {analytics.get_average_invoice_value():,.2f}")
         
         print("\n Produto com maior frequência de compra:")
-        top_product, purchase_count = analytics.get_most_frequent_product()
-        print(f"   {top_product}\n   Ocorrências: {purchase_count}")
+        print(analytics.get_most_frequent_product().to_string(index=False))
         
         print("\n Valor total gasto por cada produto:")
-        print(analytics.get_total_spent_per_product().head().to_string(index=False))
+        print(analytics.get_total_spent_per_product().to_string(index=False))
         
         print("\n Listagem de produtos (Nome e Preço Unitário):")
-        print(analytics.get_unique_products_list().head().to_string(index=False))
+        print(analytics.get_unique_products_list().to_string(index=False))
         
     except Exception as e:
         print(f"Erro ao gerar relatórios analíticos: {e}")
