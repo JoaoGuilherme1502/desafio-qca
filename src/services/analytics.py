@@ -52,12 +52,18 @@ class InvoiceAnalytics:
         invoice_totals = self.df.groupby("order_id")["total_value"].sum()
         return float(invoice_totals.mean())
     
-    def get_most_frequent_product(self) -> str:
-        """Produto com maior frequência de compra."""
+    def get_most_frequent_product(self) -> tuple[str, int]:
+        """Produto com maior frequência de compra e sua quantidade de ocorrências."""
 
         if self.df.empty:
-            return "nenhum produto"
-        return self.df["product"].value_counts().idxmax() # idxmax pega o nome do produto que está to no topo da contagem
+            return "nenhum produto", 0
+        
+        frequency = self.df["product"].value_counts()
+
+        top_product = str(frequency.index[0])
+        purchase_count = int(frequency.iloc[0])
+
+        return top_product, purchase_count
     
     def get_total_spent_per_product(self) -> pd.DataFrame:
         """Valor total gasto por cada produto."""

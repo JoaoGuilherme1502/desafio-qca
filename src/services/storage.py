@@ -42,7 +42,7 @@ class InvoiceStorage:
             # Verifica se o order_id já existe para evitar duplicidade
             for entry in current_data:
                 if entry.get("order_id") == invoice.order_id:
-                    print(f"Fatura {invoice.order_id} já cadastrado")
+                    print(f"Fatura {invoice.order_id} já cadastrado\n")
                     return False
             
             invoice_dict = invoice.model_dump(mode="json")
