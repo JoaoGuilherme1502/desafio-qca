@@ -46,29 +46,36 @@ InvoiceAnalytics (Pandas)
 ```text
 desafio-qca/
 ├── data/
-│   ├── invoices/
-│   └── database.json
+│   ├── invoices/             # Pasta onde devem ser colocados os arquivos PDF
+│   └── database.json         # Gerado automaticamente durante a execução
 ├── src/
 │   ├── models/
-│   │   ├── invoice.py
-│   │   └── item.py
+│   │   ├── invoice.py        # Modelo da fatura (Pydantic)
+│   │   └── item.py           # Modelo dos itens da fatura (Pydantic)
 │   └── services/
-│       ├── extractor.py
-│       ├── validator.py
-│       ├── storage.py
-│       └── analytics.py
-├── main.py
+│       ├── extractor.py      # Extração dos dados dos PDFs
+│       ├── validator.py      # Validação dos dados extraídos
+│       ├── storage.py        # Persistência e controle de duplicidade
+│       └── analytics.py      # Consultas analíticas utilizando Pandas
+├── .gitignore
+├── main.py                   # Interface de linha de comando (CLI)
 ├── requirements.txt
 └── README.md
 ```
 
 ---
 
----
 
 # 🚀 Como Executar
 
-## 1. Criar um ambiente virtual
+## 1. Clone o repositório
+
+```bash
+git clone https://github.com/JoaoGuilherme1502/desafio-qca.git
+cd desafio-qca
+```
+
+## 2. Crie um ambiente virtual
 
 ```bash
 python -m venv .venv
@@ -88,7 +95,7 @@ source .venv/bin/activate
 
 ---
 
-## 2. Instalar as dependências
+## 3. Instale as dependências
 
 ```bash
 pip install -r requirements.txt
@@ -96,7 +103,19 @@ pip install -r requirements.txt
 
 ---
 
-## 3. Executar o projeto
+## 4. Adicione os arquivos PDF
+
+Baixe os arquivos PDF do dataset informado no enunciado do desafio e coloque-os na pasta:
+
+```text
+data/invoices/
+```
+
+> **Observação:** o arquivo `database.json` **não precisa ser criado manualmente**. Ele será gerado automaticamente durante a primeira execução da ingestão (`python main.py ingest`).
+
+---
+
+## 5. Executar o projeto
 
 ### Ingestão dos PDFs
 
