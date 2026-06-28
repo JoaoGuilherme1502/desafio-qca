@@ -1,4 +1,5 @@
 import pdfplumber
+import re
 
 class InvoiceExtractor:
     """
@@ -8,8 +9,8 @@ class InvoiceExtractor:
     @staticmethod
     def extract_data(pdf_path: str) -> dict[str, any]:
         """
-        Lê um arquivo PDF e extrai os dados do cabeçalho e a tabela de produtos.
-        Retorna um dicionário com os dados brutos.
+        Lê um arquivo PDF e extrai os dados do cabeçalho via texto
+        e a tabela de produtos via tabelas estruturadas.
         """
 
         raw_data = {
@@ -25,28 +26,42 @@ class InvoiceExtractor:
                     raise ValueError("O arquivo PDF está vazio")
                 
                 page = pdf.pages[0]
+
+                text = page.extract_text() or ""
+
+                match_order = re.search(r"Order\s+ID:\s*(\d+)", text, re.IGNORECASE)
+                if match_order:
+                    raw_data["order_id"] = match_order.group(1)
+
+                match_date = re.search(r"Order\s+Date:\s*([\d-]+)", text, re.IGNORECASE)
+                if match_date:
+                    raw_data["date"] = match_date.group(1)
+
+                match_customer = re.search(r"Customer\s+ID:\s*([A-Z0-9]+)", text, re.IGNORECASE)
+                if match_customer:
+                    raw_data["customer_id"] = match_customer.group(1)
+
                 tables = page.extract_tables()
 
-                if len(tables) < 2:
-                    raise ValueError(f"Esperando pelo menos 2 tabelas, encontrado {len(tables)}")
+                for table in tables:
+                    if not table or not table[0]:
+                        continue
 
-                header_table = tables[0]
-                if len(header_table) >= 2:
-                    header_values = header_table[1]  
-                    if len(header_values) >= 3:
-                        raw_data["order_id"] = header_values[0]
-                        raw_data["date"] = header_values[1]
-                        raw_data["customer_id"] = header_values[2]
+                    header = [str(col).lower() for col in table[0] if col]
 
-                products_table = tables[1]
-                for row in products_table[1:]:
-                    if row and len(row) >= 4:
-                        raw_data["products"].append({
-                            "product_id": row[0],
-                            "product": row[1],
-                            "quantity": row[2],
-                            "unit_price": row[3]
-                        })
+                    if any("product" in col for col in header):
+                        for row in table[1:]:
+                            if not row or not row[0] or "totalprice" in str(row[0]).replace(" ", "").lower():
+                                continue
+                            
+                            if len(row) >= 4:
+                                raw_data["products"].append({
+                                    "product_id": row[0],
+                                    "product": str(row[1]).replace("\n", " ").strip(),
+                                    "quantity": row[2],
+                                    "unit_price": row[3]
+                                })
+                        break 
 
         except FileNotFoundError:
             print(f"Arquivo não encontrado: {pdf_path}")
