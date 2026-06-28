@@ -7,7 +7,11 @@ __pycache__/
 # Dados locais e PDFs 
 data/database.json
 data/invoices/*.pdf
+!data/invoices/.gitkeep
 
 # IDEs
 .vscode/
 .idea/
+
+# Teste
+test_run.py
